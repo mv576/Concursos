@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleção de Dados</title>
+    <style>
+	        body {
+            background-image: url(https://i.postimg.cc/25nymhCn/Kobra.jpg); /* Substitua pelo caminho da sua imagem */
+            background-size: cover; /* Ajusta a imagem para cobrir toda a tela */
+            background-position: center; /* Centraliza a imagem */
+            background-repeat: no-repeat; /* Evita a repetição da imagem */
+            margin: 0;
+            font-family: Arial, sans-serif;
+			font-size: 18px; /* Tamanho padrão do texto no corpo */
+        }
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh; /* Ocupa a altura total da tela */
+    padding: 20px;
+    box-sizing: border-box;
+    text-align: center; /* Centraliza o texto dentro da div */
+    position: relative;
+}
+.container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.6); /* Branco com opacidade de 0.6 */
+    z-index: -1; /* Coloca a sobreposição atrás do conteúdo */
+}
+#resultados {
+    background-color: rgba(255, 255, 255, 0.8); /* Branco com opacidade de 0.8 */
+    padding: 20px; /* Espaçamento interno */
+    border-radius: 10px; /* Cantos arredondados */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para destacar o quadro */
+    display: none; /* Inicialmente oculto */
+    margin-top: 20px;
+    max-width: 600px;
+    width: 100%; /* Ocupa toda a largura disponível */
+}
+
+/* Estilo para os elementos de seleção */
+select {
+    font-size: 20px; /* Tamanho da letra dos elementos select */
+    padding: 10px; /* Espaçamento interno para tornar o select mais fácil de usar */
+    margin-bottom: 20px; /* Espaçamento entre os selects */
+    width: auto; /* Largura automática, permite expansão */
+    min-width: 200px; /* Largura mínima para garantir que não fique muito pequeno */
+}
+label {
+    font-size: 22px; /* Aumenta o tamanho da fonte para os rótulos */
+    font-weight: bold; /* Deixa o texto em negrito para dar mais destaque */
+    margin-bottom: 10px; /* Adiciona espaço abaixo dos rótulos */
+    display: block; /* Faz com que os rótulos ocupem toda a largura disponível */
+}
+
+
+
+#loading {
+    display: none;
+    font-size: 16px;
+    color: #666;
+}
+
+#aprovados {
+    color: blue; /* Define a cor do texto como azul */
+	font-size:22px;
+}
+
+#chamados {
+    color: red; /* Define a cor do texto como vermelho */
+	font-size:22px;
+}
+
+#restaram {
+    color: green; /* Define a cor do texto como verde */
+	font-size:22px;
+}
+
+#prorrogado {
+    color: blue; /* Define a cor do texto como rosa */
+	font-size:22px;
+}
+
+#vencimento {
+    color: purple; /* Define a cor do texto como roxo */
+	font-size:22px;
+}
+     </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Preencha os Dados Abaixo</h1>
+        <label for="ano">Ano:</label>
+        <select id="ano" onchange="atualizarConcursos()">
+            <option value="">Selecione o ano</option>
+            <option value="2020">2020</option>
+            <option value="2021">2021</option>
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+        </select>
+
+        <label for="concurso">Concurso:</label>
+        <select id="concurso" onchange="atualizarCargos()">
+            <option value="">Selecione o concurso</option>
+        </select>
+
+        <label for="cargo">Cargo:</label>
+        <select id="cargo">
+            <option value="">Selecione o cargo</option>
+        </select>
+
+        <div id="loading">Carregando...</div>
+
+        <div id="resultados">
+            <p id="aprovados"></p>
+            <p id="chamados"></p>
+            <p id="restaram"></p>
+            <p id="prorrogado"></p>
+            <p id="vencimento"></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+<script>
+function atualizarConcursos() {
+    const ano = document.getElementById('ano').value;
+    const concursoSelect = document.getElementById('concurso');
+    const cargoSelect = document.getElementById('cargo');
+	
+	    
+    // Limpar as opções anteriores
+    concursoSelect.innerHTML = '<option value="">Selecione o concurso</option>';
+    cargoSelect.innerHTML = '<option value="">Selecione o cargo</option>';
+    cargoSelect.disabled = true;
+
+    if (ano) {
+        concursoSelect.disabled = false;
+
+        // Exemplo de concursos para cada ano
+        const concursos = {
+            '2020': ['CONCURSO 01/2020'],
+            '2021': ['CONCURSO 01/2021'],
+            '2022': ['CONCURSO 01/2022', 'CONCURSO 03/2022','CONCURSO 05/2022','CONCURSO 07/2022','P.SELETIVO 02/2022'],
+            '2023': ['CONCURSO 01/2023', 'CONCURSO 02/2023','CONCURSO 04/2023','CONCURSO 05/2023','P.SELETIVO 03/2023','P.SELETIVO 04/2023','P.SELETIVO 07/2023','P.SELETIVO 08/2023','P.SELETIVO 09/2023'],
+            '2024': ['CONCURSO 01/2024','CONCURSO 02/2024','CONCURSO 03/2024','CONCURSO 04/2024','CONCURSO 05/2024','P.SELETIVO 01/2024','P.SELETIVO 02/2024','P.SELETIVO 03/2024','P.SELETIVO 04/2024','P.SELETIVO 05/2024']
+        };
+
+        concursos[ano].forEach(function(concurso) {
+            const option = document.createElement('option');
+            option.value = concurso;
+            option.textContent = concurso;
+            concursoSelect.appendChild(option);
+        });
+    } else {
+        concursoSelect.disabled = true;
+    }
+}
+
+function atualizarCargos() {
+    const concurso = document.getElementById('concurso').value;
+    const cargoSelect = document.getElementById('cargo');
+    
+    // Limpar as opções anteriores
+    cargoSelect.innerHTML = '<option value="">Selecione o cargo</option>';
+
+    if (concurso) {
+        cargoSelect.disabled = false;
+
+        // Exemplo de cargos para cada concurso
+        const cargos = {
+            'CONCURSO 01/2020': ['Farmacêutico', 'Fisioterapeuta', 'Médico (Angiologista)', 'Médico (Auditor)', 'Médico (Colposcopista)', 'Médico (Pneumologista)', 'Médico do Trabalho', 'PEB II (Biologia)', 'PEB II (Filosofia)', 'PEB II (História)', 'PEB II (Matemática)', 'Psicólogo ', 'Técnico em Segurança do Trabalho', 'Auxiliar de Desenvolvimento Infantil', 'Educador Esportivo - Atividades Aquáticas', 'Educador Esportivo - Natação Adaptada', 'Técnico em Tecnologia da Informação', 'Educador Esportivo - Atletismo', 'Educador Esportivo - Basquete', 'Educador Esportivo - Capoeira', 'Educador Esportivo - Futebol', 'Educador Esportivo - Futsal', 'Educador Esportivo - Gin. de Academia - Mat Pilates, Acad', 'Educador Esportivo - Ginástica Rítmica', 'Educador Esportivo - Handebol', 'Educador Esportivo - Jiu Jitsu', 'Educador Esportivo - Judô', 'Educador Esportivo - Tênis', 'Educador Esportivo - Vôlei', 'Oficial de Manutenção (Serralheiro)'],
+            'CONCURSO 01/2021': ['Fonoaudiólogo (PcD)', 'Médico (Infectologista)', 'Médico (Neurologista)', 'Médico (Urologista)', 'Enfermeiro', 'Fonoaudiólogo', 'Médico (Acupunturista)', 'Médico (Cardiologista)', 'Médico (Cirurgião Geral)', 'Médico (Colposcopista)', 'Médico (Dermatologista)', 'Médico (Hematologista)', 'Médico (Neuropediatra)', 'Médico (Oftalmologista)', 'Médico (Ortopedista)', 'Médico Plantonista (Cirurgião Geral)', 'Médico Plantonista (Urgência e Emergência)', 'Técnico de Enfermagem', 'Agente de Serviços de Alimentação', 'Coveiro'],
+            'CONCURSO 01/2022': ['Agente Comunitário de Saúde - Alphaville', 'Agente Comunitário de Saúde - Centro', 'Agente Comunitário de Saúde - Chácara das Garças', 'Agente Comunitário de Saúde - Chácara Solar II', 'Agente Comunitário de Saúde - Colinas', 'Agente Comunitário de Saúde - Cururuquara', 'Agente Comunitário de Saúde - Fazendinha', 'Agente Comunitário de Saúde - Ingaí', 'Agente Comunitário de Saúde - Itapuã', 'Agente Comunitário de Saúde - Jaguari', 'Agente Comunitário de Saúde - Jaguari - Monteiros', 'Agente Comunitário de Saúde - Pq. Santana (cód. 113)- Germano', 'Agente Comunitário de Saúde - Pq. Santana (cód. 114)- Jd. Isaura', 'Agente Comunitário de Saúde - Pq. Santana (cód. 115)- (Jd. Rancho Alegre, Pq Santana 1 e Tarumã)', 'Agente Comunitário de Saúde - Pq. Santana (cód. 116)- Pq. Santana 2', 'Agente Comunitário de Saúde - Refúgio Lavras', 'Agente Comunitário de Saúde - Sítio do Morro', 'Agente Comunitário de Saúde - Votuparim'],
+            'CONCURSO 03/2022': ['Auxiliar de Farmácia', 'Médico (Infectologista)', 'Médico (Neuropediatra)', 'Médico (Psiquiatra Infantil)', 'Médico (Ultrassonografista)', 'Médico Plantonista 12h (Pediatra)', 'Médico Plantonista 24h (Urgência e Emergência)', 'Cirurgião Dentista (PcD)', 'Cirurgião Dentista', 'Cirurgião Dentista (Endodontista)', 'Cirurgião Dentista (Protesista)', 'Cirurgião Dentista (Odontopediatra)', 'Cirurgião Dentista (Periodontista)', 'Médico (Alergista)', 'Médico (Cardiologista)', 'Médico (Hematologista)', 'Médico (Mastologista)', 'Médico (Otorrinolaringologista)', 'Médico (Urologista)', 'Médico Plantonista 12h (Cirurgião Geral)', 'Médico Plantonista 12h (Ginecologista e Obstetra)', 'Médico Plantonista 12h (Urgência e Emergência)', 'Médico Plantonista 24h (Cirurgião Geral)', 'Médico Plantonista 24h (Ginecologista e Obstetra)', 'Técnico em Saúde Bucal'],
+            'CONCURSO 05/2022': ['Agente de Combate às Endemias (PcD)','Agente de Combate às Endemias'],
+			'CONCURSO 07/2022': ['Auxiliar de Farmácia', 'Fiscal Municipal - De Posturas', 'Médico - Angiologista', 'Médico - Clínica Médica', 'Médico - Gastroeterologista', 'Médico - Infectologista', 'Médico - Psiquiatra', 'Médico - Ultrassonografista', 'Médico Plantonista - 12 H - Pediatra', 'Médico Plantonista - 24 H - Pediatra', 'Médico Plantonista - 24 H - Urgência e Emergência', 'Técnico em Meio Ambiente', 'Agente de Organização Escolar', 'Desenhista Técnico', 'Fiscal de Obras', 'Fiscal Municipal - Tributário', 'Fiscal Municipal - Ambiental', 'Médico - Cardiologista', 'Médico - Cirurgião Geral', 'Médico - Endoscopista', 'Médico - Endocrinologista', 'Médico - Hematologista', 'Médico - Mastologista', 'Médico - Nefrologista', 'Médico - Pneumologista', 'Médico - Pneumologista Infantil', 'Médico - Sanitarista', 'Médico Plantonista - 12 H - Cirurgião Geral', 'Médico Plantonista - 12 H - Ginecologista Obstetra', 'Médico Plantonista - 12 H - Urgência e Emergência', 'Médico Plantonista - 24 H - Ginecologista Obstetra', 'Técnico de Enfermagem  - do Trabalho', 'Agente de Serviços Públicos', 'PEB II Educação Especial - A.E.E (PcD)', 'PEB II Educação Especial - D.V.', 'PEB II Língua Portuguesa (PcD)', 'Terapeuta Ocupacional', 'Auditor Fiscal Tributário Municipal', 'Enfermeiro do Trabalho', 'Geólogo', 'PEB II Biologia', 'PEB II Ciências', 'PEB II Educação Especial - A.E.E', 'PEB II Educação Especial - D.A.', 'PEB II Física (PcD)', 'PEB II Física', 'PEB II Língua Portuguesa', 'PEB II Matemática (PcD)', 'PEB II Matemática', 'Técnico em Prótese Odontológica', 'Técnico em Saúde Bucal', 'Agente de Trânsito', 'Educador Esportivo - Jiu-Jitsu', 'Educador Esportivo - Muay-Thai', 'Educador Esportivo - Preparador de Goleiros - Futebol e Futsal', 'Educador Esportivo - Wrestling (Luta Olímpica Greco Romana)', 'Analista de Tecnologia da Informação', 'Analista Programador', 'Engenheiro da Computação - Banco de Dados (SQL)', 'Engenheiro da Computação - Segurança da Informação'],
+            'CONCURSO 01/2023': ['Agente de Atendimento', 'Agente de Defesa Civil', 'Agente de Limpeza Pública', 'Agente de Serviços de Alimentação', 'Agente de Serviços Gerais', 'Agente de Serviços Públicos', 'Analista Programador', 'Assistente Técnico Jurídico', 'Auxiliar de Desenvolvimento Infantil', 'Desenhista Técnico', 'Educador Esportivo - Atividades Aquáticas', 'Fiscal de Obras', 'Fiscal Municipal (de Posturas)', 'Monitor Assistencial', 'Monitor Assistencial (PcD)', 'Motorista', 'Operador de Máquinas - Tratorista', 'Técnico em Meio Ambiente', 'Técnico Tributário', 'Terapeuta Ocupacional'],
+			'CONCURSO 02/2023': ['Auxiliar em Saúde Bucal ', 'Médico Alergista', 'Médico Alergista Infantil', 'Médico Cardiologista Infantil', 'Médico Clínica Médica', 'Médico Clínico Proctologista', 'Médico Colposcopista', 'Médico Endocrinologista Infantil', 'Médico Endoscopista', 'Médico Gastroenterologista', 'Médico Gastroenterologista Infantil', 'Médico Geriatra', 'Médico Ginecologista Obstetra', 'Médico Hebiatra', 'Médico Hematologista Infantil', 'Médico Nefrologista Infantil', 'Médico Neurologista', 'Médico Neuropediatra', 'Médico Oftalmologista Infantil', 'Médico Otorrinolaringologista', 'Médico Pediatra', 'Médico Plantonista 12h - Cirurgião Geral', 'Médico Plantonista 12h - Ginecologista Obstetra', 'Médico Plantonista 12h - Urgência e Emergência', 'Médico Pneumologista', 'Médico Pneumologista Infantil', 'Médico Psiquiatra', 'Médico Psiquiatra Infantil', 'Médico Reumatologista', 'Médico Urologista', 'Técnico em Saúde Bucal'],
+			'CONCURSO 04/2023': ['Diretor de Escola', 'Diretor de Escola', 'Diretor de Escola', 'Diretor de Escola', 'PEB II - Sociologia', 'PEB II - Sociologia', 'PEB II - Sociologia', 'PEB II - Sociologia', 'PEB II Educação Especial - D.A.', 'PEB II Educação Especial - D.A.', 'PEB II Educação Especial - D.A.', 'PEB II Educação Especial - D.A.', 'PEB II Educação Especial - D.V.', 'PEB II Educação Especial - D.V.', 'PEB II Educação Especial - D.V.', 'PEB II Educação Especial - D.V.', 'Supervisor de Ensino', 'Supervisor de Ensino', 'Supervisor de Ensino', 'Supervisor de Ensino', 'Supervisor de Ensino (PcD)', 'Supervisor de Ensino (PcD)', 'Supervisor de Ensino (PcD)', 'Supervisor de Ensino (PcD)', 'Vice-Diretor de Escola', 'Vice-Diretor de Escola', 'Vice-Diretor de Escola', 'Vice-Diretor de Escola'],
+			'CONCURSO 05/2023': ['Agente de Defesa Civil', 'Agente de Serviços de Alimentação', 'Auxiliar em Saúde Bucal', 'Cirurgião Dentista - Bucomaxilofacial', 'Educador Esportivo - Atividades Aquáticas', 'Educador Esportivo - Boxe', 'Educador Esportivo - Karatê', 'Fiscal Municipal - De Posturas', 'Fonoaudiólogo', 'Intérprete de Libras', 'Lavador', 'Médico Cardiologista Pediátrico', 'Médico Cirurgião Geral', 'Médico Clínica Médica', 'Médico do Trabalho', 'Médico Endocrinologia e Metabologia', 'Médico Endocrinologista Pediátrico', 'Médico Gastroenterologista', 'Médico Gastroenterologista Pediátrica', 'Médico Geriatra', 'Médico Ginecologista Obstetra', 'Médico Hebiatra (Medicina do Adolescente)', 'Médico Nefrologista', 'Médico Nefrologista Pediátrico', 'Médico Neurologista', 'Médico Neurologista Pediátrico', 'Médico Pediatra', 'Médico Plantonista 24h - Ginecologista Obstetra', 'Médico Plantonista 24h - Pediatra', 'Médico Pneumologista', 'Médico Psiquiatra', 'Médico Psiquiatria da Infância e Adolescência', 'Médico Reumatologista', 'Médico Urologista', 'Monitor Assistencial', 'Oficial de Manutenção - Eletricista', 'Oficial de Manutenção - Encanador', 'Operador de Máquinas - Tratorista', 'Psicólogo - Neuropsicologia', 'Psicólogo - Recursos Humanos', 'Técnico de Farmácia', 'Técnico em Prótese Odontológica', 'Técnico em Tecnologia da Informação', 'Terapeuta Ocupacional'], 
+			'CONCURSO 01/2024': ['Agente de Defesa Civil', 'Agente de Serviços Públicos', 'Analista Sócio Cultural', 'Auxiliar de Desenvolvimento Infantil', 'Auxiliar em Saúde Bucal', 'Educador Esportivo - Atividades Aquáticas', 'Educador Esportivo - Futebol', 'Educador Esportivo - Ginástica de Academia', 'Educador Esportivo - Ginástica de Academia (PcD)', 'Educador Esportivo - Natação Adaptada', 'Educador Histórico Cultural', 'Fonoaudiólogo', 'Motorista', 'Oficial Administrativo', 'Oficial Administrativo (PcD)', 'Operador de Tráfego', 'Professor de Artes - Fotografia', 'Professor de Dança - Ballet Clássico', 'Professor de Dança - Contemporânea', 'Professor de Dança - Jazz', 'Professor de Dança - Ritmos', 'Professor de Música - Bateria e Percussão', 'Professor de Música - Musicalização Infantil', 'Professor de Música - Trompete/Trombone/Sopro', 'Professor de Música - Trompete/Trombone/Sopro (PcD)', 'Psicopedagogo', 'Técnico em Agrimessura', 'Terapeuta Ocupacional'],
+			'CONCURSO 02/2024': ['Médico Clínica Médica', 'Médico Geriatra', 'Médico Ginecologista Obstetra', 'Médico Hebiatra (Medicina do Adolescente)', 'Médico Infectologista', 'Médico Neurologista', 'Médico Plantonista 12h Pediatra', 'Médico Plantonista 24h Pediatra', 'Médico Pneumologista', 'Médico Psiquiatra', 'Médico Psiquiatra da Infância e Adolescência', 'Médico Reumatologista', 'Médico Ultrassonografista'],
+			'CONCURSO 03/2024': ['PEB I Educação Básica (PcD)', 'PEB I Educação Básica (MSVD)', 'PEB I Educação Básica', 'PEB I Educação Infantil (PcD)', 'PEB I Educação Infantil', 'PEB II Educação Artística', 'PEB II Educação Filosofia', 'PEB II Educação Física', 'PEB II Educação Geografia', 'PEB II Educação História (PcD)', 'PEB II Educação História', 'PEB II Educação Inglês', 'PEB II Educação Química', 'PEB II Educação Especial - Deficiência Intelectual', 'Professor Adjunto (PcD)', 'Professor Adjunto'],
+			'CONCURSO 04/2024': ['Agente Comunitário de Saúde - Cento e Vinte (UBS Limério)', 'Agente Comunitário de Saúde - Ingaí (UBS Ingaí)', 'Agente Comunitário de Saúde - Ingaí (UBS Ingaí) PcD', 'Agente Comunitário de Saúde - Itaim (UBS Dr.Álvaro Ribeiro)', 'Agente Comunitário de Saúde - Itapoã (UBS Fazendinha)', 'Agente Comunitário de Saúde - Itapoã (UBS Fazendinha) PcD', 'Agente Comunitário de Saúde - São Pedro (UBS São Pedro)', 'Agente Comunitário de Saúde - Suru (UBS Dr. Álvaro Ribeiro)'],
+			'CONCURSO 05/2024': ['Médico Clínica Médica', 'Médico do Trabalho', 'Médico Gastroenterologista', 'Médico Geriatra', 'Médico Ginecologista Obstetra', 'Médico Hebiatra (Medicina do Adolescente)', 'Médico Infectologista', 'Médico Neurologista', 'Médico Plantonista 12h - Pediatra', 'Médico Plantonista 24h - Pediatra', 'Médico Plantonista 24h - Urgência e Emergência', 'Médico Plantonista 24h - Urgência e Emergência (PcD)', 'Médico Pneumologista', 'Médico Psiquiatra', 'Médico Psiquiatra da Infância e Adolescência', 'Médico Reumatologista', 'Médico Ultrassonografista'],
+			'P.SELETIVO 01/2024': ['Agente Comunitário de Saúde','Agente de combate às Endemias'],
+			'P.SELETIVO 02/2024': ['Médico Acupunturista', 'Médico Clínica Médica', 'Médico Clínico Proctologista', 'Médico Colposcopista', 'Médico Endoscopista', 'Médico Gastroenterologista', 'Médico Gastroenterologista Pediátrico', 'Médico Geriatra', 'Médico Ginecologista Obstetra', 'Médico Hebiatra - Medicina do Adolescente', 'Médico Hematologista', 'Médico Infectologista', 'Médico Mastologista', 'Médico Nefrologista', 'Médico Nefrologista Pediátrico', 'Médico Neurologista', 'Médico Neurologista Pediátrico', 'Médico Oftalmologista', 'Médico Otorrinolaringologista', 'Médico Pediatra', 'Médico Plantonista 12h Cirurgião Geral', 'Médico Plantonista 12h Ginecologista Obstetra', 'Médico Plantonista 12h Pediatra', 'Médico Plantonista 12h Urgência e Emergência', 'Médico Plantonista 24h Ginecologista Obstetra', 'Médico Plantonista 24h Pediatra', 'Médico Plantonista 24h Urgência e Emergência', 'Médico Pneumologista', 'Médico Pneumologista Pediátrico', 'Médico Psiquiatra', 'Médico Psiquiatra da Infância e Adolescência', 'Médico Reumatologista', 'Médico Ultrassonografista', 'Médico Urologista'],
+			'P.SELETIVO 03/2024': ['Agente de Serviços de Alimetação', 'Auxiliar de Desenvolvimento Infantil', 'Auxiliar de Farmácia', 'Auxiliar em Saúde Bucal', 'Cirurgião Dentista', 'Cirurgião Dentista - Bucomaxilofacial', 'Cirurgião Dentista - Endodontista', 'Cirurgião Dentista - Odontopediatra', 'Cirurgião Dentista (PcD)', 'Coveiro', 'Enfermeiro', 'Enfermeiro (PcD)', 'Farmacêutico', 'Fonoaudiólogo', 'Motorista', 'Nutricionista', 'Psicólogo', 'Psicólogo Neuropsicologia', 'Terapeuta Ocupacional'],
+			'P.SELETIVO 04/2024': ['Coordenador de Polo', 'Mediador Presencial', 'Orientador de Polo', 'Orientador de Polo (PcD)'],
+			'P.SELETIVO 05/2024': ['Fonoaudiólogo', 'Motorista', 'Terapeuta Ocupacional'],
+			'P.SELETIVO 03/2023': ['Auxiliar de Farmácia', 'Auxiliar em Saúde Bucal', 'Fonoaudiólogo', 'Intérprete de Libras', 'PEB II Ciências', 'PEB II Educação Especial A.E.E.', 'PEB II Educação Especial D.I.', 'PEB II Educação Especial D.V.', 'PEB II Filosofia', 'PEB II Física', 'PEB II Geografia', 'PEB II Inglês', 'PEB II Língua Portuguesa', 'PEB II Matemática', 'Professor Adjunto', 'Professor Adjunto PcD', 'Técnico de Enfermagem', 'Técnico de Enfermagem (PcD)', 'Técnico em Prótese Odontológica', 'Técnico em Saúde Bucal', 'Terapeuta Ocupacional', 'Terapeuta Ocupacional (PcD)'],
+			'P.SELETIVO 04/2023': ['Mediador Presencial', 'Orientador de Polo (PcD)', 'Orientador de Polo', 'Coordenador de Polo'],
+			'P.SELETIVO 07/2023': ['Médico Cardiologia Pediátrica', 'Médico Clínica Médica', 'Médico Hebiatra (medicina do adolescente)', 'Médico Neurologista', 'Médico Ortopedista', 'Médico Pediatra', 'Médico Plantonista 12h - Cirurgião Geral', 'Médico Plantonista 12h - Pediatra', 'Médico Plantonista 12h - Urgência e Emergência', 'Médico Plantonista 12h Ginecologista Obstetra', 'Médico Plantonista 24h - Pediatra', 'Médico Plantonista 24h - Urgência e Emergência', 'Médico Pneumologia Pediátrica', 'Médico Psiquiatra', 'Médico Reumatologista', 'Médico Ultrassonografista', 'Médico Urologista'],
+			'P.SELETIVO 08/2023': ['Agente de Limpeza Púbica', 'Agente de Organização Escolar', 'Agente de Serviços Gerais', 'Agente de Serviços Públicos', 'Fonoaudiólogo', 'PEB I Educação Básica', 'PEB I Educação Básica (PcD)', 'PEB I Educação Infantil', 'PEB I Educação Infantil (PcD)', 'PEB II Biologia', 'PEB II Ciências', 'PEB II Educação Artística', 'PEB II Educação Especial - D.A.', 'PEB II Educação Especial - D.I.', 'PEB II Educação Especial - D.V.', 'PEB II Educação Física', 'PEB II Espanhol', 'PEB II Física', 'PEB II História', 'PEB II História (PcD)', 'PEB II Inglês', 'PEB II Língua Portuguesa', 'PEB II Matemática', 'PEB II Química', 'PEB II Sociologia', 'Terapeuta Ocupacional'],
+			'P.SELETIVO 09/2023': ['Médico Alergista e Imunologista', 'Médico Alergista e Imunologista Pediátrico', 'Médico Angiologista', 'Médico Cardiologista', 'Médico Cardiologista Pediátrico', 'Médico Cirurgião Geral', 'Médico Clínico Proctologista', 'Médico Colposcopista', 'Médico Dermatologista', 'Médico Endocrinologista', 'Médico Endocrinologista Pediátrico', 'Médico Gastroenterologista', 'Médico Ginecologista Obstetra', 'Médico Hebiatra (Medicina do Adolescente)', 'Médico Hematologista', 'Médico Infectologista', 'Médico Neurologista Pediátrico', 'Médico Neurologita', 'Médico Plantonista 12h Ginecologista Obstetra', 'Médico Plantonista 12h Pediatra', 'Médico Plantonista 12h Urgência e Emergência', 'Médico Plantonista 24h Ginecologista Obstetra', 'Médico Plantonista 24h Pediatra', 'Médico Plantonista 24h Urgência e Emergência', 'Médico Plantonista 24h Urgência e Emergência - PcD', 'Médico Pneumologista', 'Médico Pneumologista Pediátrico', 'Médico Psiquiatra', 'Médico Psiquiatra da Infância e Adolescência', 'Médico Reumatologita', 'Médico Ultrassonografista', 'Médico Urologista'],
+			'P.SELETIVO 02/2022': ['Assistente Social', 'Assistente Social (PcD)', 'Auxiliar de Farmácia', 'Auxiliar em Saúde Bucal', 'Cirurgião-Dentista Protesista', 'Fisioterapeuta', 'Fonoaudiólogo', 'Intérprete de Libras', 'Médico Acupunturista', 'Médico Angiologista', 'Médico Cardiologista', 'Médico Cirurgião Geral', 'Médico Clínica Médica', 'Médico Dermatologista', 'Médico Endocrinologista', 'Médico Geriatra', 'Médico Infectologista', 'Médico Mastologista', 'Médico Nefrologista', 'Médico Oftalmologista', 'Médico Ortopedista', 'Médico Otorrinolaringologista', 'Médico Plantonista 12h Pediatra', 'Médico Plantonista 12h Urgência e Emergência', 'Médico Plantonista 24h Cirurgião Geral', 'Médico Plantonista 24h Ginecologista Obstetra', 'Médico Urologista', 'Monitor Assistencial', 'Motorista', 'PEB II Educação Especial  - A.E.E', 'PEB II Educação Especial - D.A.', 'PEB II Educação Especial - D.I.', 'PEB II Educação Especial - D.V.', 'PEB II Espanhol', 'PEB II Filosofia', 'PEB II Fisica', 'PEB II Geografia', 'PEB II História', 'PEB II Inglês', 'PEB II Língua Portuguesa', 'PEB II Matemática', 'PEB II Quimica', 'PEB II Sociologia', 'Técnico em Prótese Odontológica', 'Técnico em Saúde Bucal', 'Terapeuta Ocupacional'],
+			// Continue com os cargos para os demais concursos...
+        };
+
+        cargos[concurso].forEach(function(cargo) {
+            const option = document.createElement('option');
+            option.value = cargo;
+            option.textContent = cargo;
+            cargoSelect.appendChild(option);
+        });
+
+        cargoSelect.addEventListener('change', buscarDadosNaPlanilha);
+    } else {
+        cargoSelect.disabled = true;
+    }
+}
+function resetResultados() {
+    document.getElementById('resultados').style.display = 'none'; // Esconde a pesquisa
+}
+
+function buscarDadosNaPlanilha() {
+    const ano = document.getElementById('ano').value;
+    const concurso = document.getElementById('concurso').value;
+    const cargo = document.getElementById('cargo').value;
+    
+    // Mostrar o indicador de carregamento
+    document.getElementById('loading').style.display = 'block';
+
+    // URL do Web App gerado no Google Apps Script
+    const url = `https://script.google.com/macros/s/AKfycbxzV_u8Kp4oGWOPiDhjudNlOaQ8byPzkoRK5TNIsugO4UgGiOrjiSvIfXD3fKU8fMsH/exec`;
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            const rows = data;
+
+            // Encontrar a linha que corresponde ao ano, concurso e cargo selecionado
+            const resultado = rows.find(row => row[0] === ano && row[1] === concurso && row[2] === cargo);
+
+            if (resultado) {
+                // Função para formatar a data no formato dd/mm/yyyy
+                function formatarData(dataISO) {
+                    if (!dataISO) return '';
+                    const data = new Date(dataISO);
+                    const dia = String(data.getDate()).padStart(2, '0');
+                    const mes = String(data.getMonth() + 1).padStart(2, '0');
+                    const ano = data.getFullYear();
+                    return `${dia}/${mes}/${ano}`;
+                }
+
+                // Exibir os dados encontrados
+                document.getElementById('aprovados').textContent = `Aprovados: ${resultado[3]}`;
+                document.getElementById('chamados').textContent = `Chamados: ${resultado[4]}`;
+                document.getElementById('restaram').textContent = `Restaram: ${resultado[5]}`;
+                document.getElementById('prorrogado').textContent = `Data de Prorrogação: ${formatarData(resultado[6])}`;
+                document.getElementById('vencimento').textContent = `Data de Vencimento: ${formatarData(resultado[7])}`;
+                document.getElementById('resultados').style.display = 'block'; // Mostra a pesquisa
+            } else {
+                // Exibir mensagem de não encontrado
+                alert('Dados não encontrados para a seleção feita.');
+            }
+
+            // Ocultar o indicador de carregamento
+            document.getElementById('loading').style.display = 'none';
+        })
+        .catch(error => {
+            console.error('Erro ao buscar dados na planilha:', error);
+            // Ocultar o indicador de carregamento
+            document.getElementById('loading').style.display = 'none';
+			document.getElementById('ano').addEventListener('change', resetResultados);
+            
+        });
+}
+
+
+</script>
